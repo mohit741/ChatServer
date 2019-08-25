@@ -5,21 +5,33 @@
     <title>Chat Rooms</title>
 </head>
 <body>
-    What chat room would you like to enter?<br/>
-    <input id="room-name-input" type="text" size="100"/><br/>
-    <input id="room-name-submit" type="button" value="Enter"/>
+    Enter your alias : <br/>
+    <p id="error" style="color: red"></p><br/>
+    <input id="alias-input" type="text" size="100"/><br/>
+    <input id="alias-submit" type="button" value="Enter"/>
 
     <script>
-        document.querySelector('#room-name-input').focus();
-        document.querySelector('#room-name-input').onkeyup = function(e) {
+        function check_available(user){
+            var url = "{% url 'checkalias' 'alias' %}".replace('alias', user);
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                window.location.pathname = '/chat/default/'+user;
+            } else document.getElementById("error").innerHTML="Alias already exists !";
+            };
+            xhttp.open("GET",url, true);
+            xhttp.send();
+        }
+        document.querySelector('#alias-input').focus();
+        document.querySelector('#alias-input').onkeyup = function(e) {
             if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#room-name-submit').click();
+                document.querySelector('#alias-submit').click();
             }
         };
 
-        document.querySelector('#room-name-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/chat/' + roomName + '/';
+        document.querySelector('#alias-submit').onclick = function(e) {
+            var user = document.querySelector('#alias-input').value;
+            check_available(user);
         };
     </script>
 </body>

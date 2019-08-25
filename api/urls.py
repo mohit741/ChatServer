@@ -5,5 +5,6 @@ from api import views
 
 urlpatterns = [
     path('',views.home,name='home'),
-    path('<str:room_name>/', views.room, name='room'),
+    path('check/<str:alias>',views.check_alias,name='checkalias'),
+    path('<str:room_name>/<str:user>', views.room, name='room'),
 ]

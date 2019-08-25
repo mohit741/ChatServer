@@ -10,16 +10,17 @@
     <input id="chat-message-submit" type="button" value="Send"/>
 </body>
 <script>
-    var roomName = {{ room_name_json }};
+    var user = {{ alias }};
 
     var chatSocket = new WebSocket(
         'ws://' + window.location.host +
-        '/ws/chat/' + roomName + '/$');
+        '/ws/chat/default/$');
 
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
         var message = data['message'];
-        document.querySelector('#chat-log').value += (message + '\n');
+        var alias = data['alias'];
+        document.querySelector('#chat-log').value += (alias + ':' + message + '\n');
     };
 
     chatSocket.onclose = function(e) {
@@ -37,9 +38,10 @@
         var messageInputDom = document.querySelector('#chat-message-input');
         var message = messageInputDom.value;
         chatSocket.send(JSON.stringify({
-            'message': message
+            'message': message,
+            'alias' : user
         }));
-
+        console.log(e);
         messageInputDom.value = '';
     };
 </script>
